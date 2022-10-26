@@ -7,24 +7,31 @@ import pprint
 
 logging.basicConfig(filename='/tmp/fastnetmon_notify_script.log', format='%(asctime)s %(message)s', level=logging.DEBUG)
 
-if len(sys.argv) != 3:
-    logging.error("Please provide two arguments for script: action and IP address")
-    sys.exit(1)
-
-# Action could be: ban, unban, partial_block
-action = sys.argv[1]
-ip_address = sys.argv[2]
-
-logging.info("Start for action %s and IP %s" % (action, ip_address))
+# We use modern logic which does not use command line argumetns and reads all information directly from stdin
 
 # Read all data from stdin
 stdin_data = sys.stdin.read()
 
-logging.info("We got following details: " + stdin_data)
+# logging.info("We got following details: " + stdin_data)
 
 parsed_details = json.loads(stdin_data)
 
-logging.info("Decoded details from JSON: " + pprint.pformat(parsed_details))
+# Uncoment to see all available data
+# logging.info("Decoded details from JSON: " + pprint.pformat(parsed_details))
 
-# You can use attack details in this form:
-# logging.info("Attack direction: " + parsed_details['attack_details']['attack_direction'])
+# Action could be: ban, unban, partial_block
+action = parsed_details["action"]
+
+# Can be empty, per_host or hostgroup
+scope = parsed_details["alert_scope"]
+
+if scope == "" or scope == "host":
+    ip_address = parsed_details["ip"] 
+
+    logging.info("Callback action " + action + " for host " + ip_address) 
+elif scope == "hostgroup":
+     hostgroup_name = parsed_details["hostgroup_name"]
+
+     logging.info("Callback action " + action + " for hostgroup " + hostgroup_name)
+else: 
+    logging.info("Unknown scope " + scope)
