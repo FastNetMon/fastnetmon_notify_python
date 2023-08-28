@@ -19,7 +19,7 @@ parsed_details = json.loads(stdin_data)
 # Uncoment to see all available data
 # logging.info("Decoded details from JSON: " + pprint.pformat(parsed_details))
 
-# Action could be: ban, unban, partial_block
+# Action could be: ban, unban for BGP Blackhole mode and partial_block, partial_unblock for BGP Flow Spec mode
 action = parsed_details["action"]
 
 # Can be empty, per_host or hostgroup
