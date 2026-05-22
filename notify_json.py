@@ -22,10 +22,10 @@ parsed_details = json.loads(stdin_data)
 # Action could be: ban, unban, attack_status for BGP Blackhole mode and partial_block, partial_unblock for BGP Flow Spec mode
 action = parsed_details["action"]
 
-# Can be: per_host, hostgroup,network, remote_host
+# Can be: host, hostgroup,network, remote_host
 scope = parsed_details["alert_scope"]
 
-if scope == "" or scope == "host":
+if scope == "host":
     ip_address = parsed_details["ip"] 
 
     logging.info("Callback action " + action + " for host " + ip_address) 
@@ -37,5 +37,9 @@ elif scope == "network":
      network = parsed_details["network"]
 
      logging.info("Callback action " + action + " for network " + network)
+elif scope == "remote_host":
+    ip_address = parsed_details["ip"] 
+
+    logging.info("Callback action " + action + " for remote host " + ip_address) 
 else: 
     logging.info("Unknown scope " + scope)
